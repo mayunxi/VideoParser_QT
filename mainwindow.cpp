@@ -84,18 +84,13 @@ void MainWindow::openFile()
     m_videoParser.init(aFileName.toStdString());
     ui->tableWidget->clearContents();
     tableIndex = 0;
+    //表格窗口显示NALU信息
     for (int i = 0; i < m_videoParser.m_nValTotalNum; i++)
     {
         ShowNLInfo(&m_videoParser.m_vNalTypeVector[i]);
     }
+    //视频信息
     ui->textEdit_info->setText(QString::fromStdString(m_videoParser.m_cVideoInfo.strSimpleInfo));
-}
-int hex2char(uint8_t c)
-{
-    return ((c >= '0') && (c <= '9')) ? int(c - '0') :
-           ((c >= 'A') && (c <= 'F')) ? int(c - 'A' + 10) :
-           ((c >= 'a') && (c <= 'f')) ? int(c - 'a' + 10) :
-           -1;
 }
 void MainWindow::tableItemClick(QTableWidgetItem* item)
 {

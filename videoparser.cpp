@@ -5,7 +5,10 @@ VideoParser::VideoParser()
 {
 
 }
-
+/*
+ * @brief 解析文件成nalu，获取视频信息
+ * @param fileName
+ */
 void VideoParser::init(string fileName)
 {
     m_vNalTypeVector.clear();

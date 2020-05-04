@@ -578,7 +578,7 @@ int NalParser::parseNALU(NALU_t& vNal, char** naluData, char** naluInfo)
     {
         // 此函数分析时，是不包含startcode的，所以要减去startcodeLen
         h265_read_nal_unit(m_hH265, &m_naluData[vNal.startcodeLen], vNal.len - vNal.startcodeLen);
-        //h265_debug_nal_t(m_hH265,m_hH265->nal);    // 打印到m_outputInfo中
+        //h265_debug_nal_t(m_hH265,m_hH265->nal);    // 打印到m_outputInfo中,show in the tree
     }
     else
     {
