@@ -6,6 +6,9 @@
 
 #include <vector>
 #include <string>
+#include <cstdlib>
+#include <iostream>
+#include <stdlib.h>
 using std::vector;
 using namespace std;
 typedef struct

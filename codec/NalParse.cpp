@@ -4,7 +4,7 @@
 #include <string.h>
 //#include <memory.h>
 #include<stdarg.h>
-#include "NaLParse.h"
+#include "codec/NalParse.h"
 
 NalParser::NalParser()
 {
@@ -805,20 +805,20 @@ int NalParser::findFirstNALU(FILE* fp, int* startcodeLenght)
 
     return pos - startcode_len;
 }
-
+bool endWith(const string &str, const string &tail) {
+    return str.compare(str.size() - tail.size(), tail.size(), tail) == 0;
+}
 FileType NalParser::judeVideoFile(const char* filename)
 {
     char szExt[16] = {0};
     FileType codecType = FILE_H264; // default
 
-    _splitpath(filename, NULL, NULL, NULL, szExt);
-    if (!strcmp(&szExt[1], "h265") || !strcmp(&szExt[1], "265") ||
-        !strcmp(&szExt[1], "hevc"))
+    string file = filename;
+    if (endWith(file,".h265"))
     {
         codecType = FILE_H265;
     }
-    else if (!strcmp(&szExt[1], "h264") || !strcmp(&szExt[1], "264") ||
-        !strcmp(&szExt[1], "avc"))
+    else if (endWith(file,".h264"))
     {
         codecType = FILE_H264;
     }
