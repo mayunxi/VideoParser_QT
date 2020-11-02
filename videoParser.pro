@@ -34,7 +34,8 @@ SOURCES += \
     codec/h265_sei.cpp \
     commands.cpp \
     chunks.cpp \
-    qhexedit.cpp
+    qhexedit.cpp \
+    codec/H264Decode.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -52,9 +53,14 @@ HEADERS += \
     codec/NalParse.h \
     qhexedit.h \
     chunks.h \
-    commands.h
+    commands.h \
+    codec/H264Decode.h
 
 FORMS += \
         mainwindow.ui
 
 INCLUDEPATH += $$PWD/codec/
+INCLUDEPATH += $$PWD/ffmpeg/include
+
+LIBS += -L./ffmpeg/lib/ -lavcodec -lavutil  -liconv -lswresample -lavformat  -lgcc     -lmingwex  -lswscale
+
