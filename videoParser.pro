@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
-
+CONFIG += C++11
+QMAKE_CXXFLAGS += -std=c++11
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = videoParser
@@ -58,9 +59,16 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+win32{
 
 INCLUDEPATH += $$PWD/codec/
 INCLUDEPATH += $$PWD/ffmpeg/include
 
 LIBS += -L$$PWD\ffmpeg\lib -lavformat -lavcodec -lavutil  -liconv -lswresample   -lgcc -lmingwex  -lswscale
+}
+unix{
+INCLUDEPATH += $$PWD/codec/
+INCLUDEPATH += /usr/local/include
 
+LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -liconv -lswresample  -lswscale
+}
