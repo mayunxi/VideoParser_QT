@@ -62,5 +62,5 @@ FORMS += \
 INCLUDEPATH += $$PWD/codec/
 INCLUDEPATH += $$PWD/ffmpeg/include
 
-LIBS += -L./ffmpeg/lib/ -lavcodec -lavutil  -liconv -lswresample -lavformat  -lgcc     -lmingwex  -lswscale
+LIBS += -L$$PWD\ffmpeg\lib -lavformat -lavcodec -lavutil  -liconv -lswresample   -lgcc -lmingwex  -lswscale
 
