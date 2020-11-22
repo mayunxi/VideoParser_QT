@@ -59,15 +59,16 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
-win32{
 
 INCLUDEPATH += $$PWD/codec/
+win32{
+
 INCLUDEPATH += $$PWD/ffmpeg/include
 
 LIBS += -L$$PWD\ffmpeg\lib -lavformat -lavcodec -lavutil  -liconv -lswresample   -lgcc -lmingwex  -lswscale
 }
 unix{
-INCLUDEPATH += $$PWD/codec/
+
 INCLUDEPATH += /usr/local/include
 
 LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -liconv -lswresample  -lswscale
