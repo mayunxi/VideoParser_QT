@@ -71,5 +71,5 @@ unix{
 
 INCLUDEPATH += /usr/local/include
 
-LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -liconv -lswresample  -lswscale
+LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -lswresample  -lswscale
 }
