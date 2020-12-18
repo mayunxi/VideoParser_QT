@@ -3,12 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
 #include "H264Decode.h"
-
 //#include "bmp_utils.h"
 //#include "tjpeg_utils.h"
-
 #ifdef _DEBUG_
 int debug(const char* fmt, ...)
 {
@@ -126,7 +123,7 @@ int CH264Decoder::openVideoFile(const char* avifile)
         av_free(m_picture);
         return -1;
     }
-    size = avpicture_get_size(AV_PIX_FMT_BGR24, m_avctx->width, m_avctx->height);
+    size = avpicture_get_size(AV_PIX_FMT_RGB24, m_avctx->width, m_avctx->height);
     // m_picBuffer要到最后释放
     m_picBuffer = (unsigned char *)av_malloc(size);
     if (!m_picBuffer)
@@ -135,10 +132,10 @@ int CH264Decoder::openVideoFile(const char* avifile)
         av_free(m_frameRGB);
         return -1;
     }
-    avpicture_fill((AVPicture *)m_frameRGB, m_picBuffer, AV_PIX_FMT_BGR24, m_avctx->width, m_avctx->height);
+    avpicture_fill((AVPicture *)m_frameRGB, m_picBuffer, AV_PIX_FMT_RGB24, m_avctx->width, m_avctx->height);
     // 创建转换上下文
     m_imgctx = sws_getContext(m_avctx->width, m_avctx->height, m_avctx->pix_fmt, m_avctx->width, m_avctx->height, 
-        AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
+        AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
     if (m_imgctx == NULL)
     {
         av_free(m_picture);
@@ -263,7 +260,7 @@ int CH264Decoder::getFrame(unsigned char** yuvBuffer, unsigned char** rgbBuffer,
     av_init_packet(&avpkt);
     //int frame = 0;
     // av_read_fram返回下一帧，发生错误或文件结束返回<0
-    while (av_read_frame(m_fmtctx, &avpkt) >= 0)
+    if (av_read_frame(m_fmtctx, &avpkt) >= 0)
     {
         // 解码视频流
         if (avpkt.stream_index == m_videoStream)
@@ -277,6 +274,8 @@ int CH264Decoder::getFrame(unsigned char** yuvBuffer, unsigned char** rgbBuffer,
             }
             if (got_picture)
             {
+                m_frameCnt++;
+                printf("frameCnt:%d\n",m_frameCnt);
                 m_picWidth  = m_avctx->width;
                 m_picHeight = m_avctx->height;
                 // 传出原始数据指针，由于内部已经申请了，不用再开辟数据

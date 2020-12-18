@@ -370,13 +370,19 @@ void NalParser::naluInfoStr(NALU_t *nalu)
 
 void NalParser::VideoInfoStr(videoinfo_t *videoInfo)
 {
-
+    //https://github.com/mayunxi/VideoParser_QT/issues/1
     string &strSimpleInfo = videoInfo->strSimpleInfo;
+    strSimpleInfo = "1";
     string &strProfileInfo = videoInfo->strProfileInfo;
+    strProfileInfo = "1";
     string &strLevelInfo = videoInfo->strLevelInfo;
+    strLevelInfo = "1";
     string &strTierInfo= videoInfo->strTierInfo;
+    strTierInfo = "1";
     string &strVideoFormat = videoInfo->strVideoFormat;
+    strVideoFormat = "1";
     string &strBitDepth = videoInfo->strBitDepth;
+    strBitDepth = "1";
     // H.265
     if (videoInfo->type)
     {

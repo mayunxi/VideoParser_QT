@@ -36,7 +36,9 @@ SOURCES += \
     commands.cpp \
     chunks.cpp \
     qhexedit.cpp \
-    codec/H264Decode.cpp
+    codec/H264Decode.cpp \
+    playdialog.cpp \
+    getframethread.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,10 +57,13 @@ HEADERS += \
     qhexedit.h \
     chunks.h \
     commands.h \
-    codec/H264Decode.h
+    codec/H264Decode.h \
+    playdialog.h \
+    getframethread.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    playdialog.ui
 
 INCLUDEPATH += $$PWD/codec/
 win32{
@@ -73,3 +78,9 @@ INCLUDEPATH += /usr/local/include
 
 LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -lswresample  -lswscale
 }
+
+DISTFILES += \
+    ico/bfzn_004.ico \
+    ico/bfzn_005.ico \
+    ico/bfzn_006.ico \
+    ico/bfzn_007.ico

@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+#include "H264Decode.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QMenu *pPlay = mBar->addMenu("播放");
     QAction *playAct = pPlay->addAction("播放");
+    connect(playAct,&QAction::triggered,this,&MainWindow::play);
 
     QMenu *pAbout = mBar->addMenu("关于");
     QAction *aboutAct = pAbout->addAction("关于");
@@ -63,8 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hexEdit = new QHexEdit(ui->frame_hex);
     //hexEdit->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     hexEdit->resize(831,221);
-    connect(hexEdit, SIGNAL(overwriteModeChanged(bool)), this, SLOT(setOverwriteMode(bool)));
-    connect(hexEdit, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
+
 }
 
 MainWindow::~MainWindow()
@@ -77,7 +79,7 @@ void MainWindow::openFile()
     QString curPath=QDir::currentPath();//获取系统当前目录
     QString dlgTitle="打开视频文件"; //对话框标题
     QString filter="h264/h265文件(*.h264 *.264 *.h265 *.265);;视频文件(*.mp4 *.flv *.avi);;所有文件(*.*)"; //文件过滤器
-    QString aFileName=QFileDialog::getOpenFileName(this,dlgTitle,curPath,filter);
+    aFileName=QFileDialog::getOpenFileName(this,dlgTitle,curPath,filter);
     if (aFileName.isEmpty())
       return;
     this->setWindowTitle(aFileName+"-Video Parser");
@@ -91,6 +93,17 @@ void MainWindow::openFile()
     }
     //视频信息
     ui->textEdit_info->setText(QString::fromStdString(m_videoParser.m_cVideoInfo.strSimpleInfo));
+}
+
+void MainWindow::play()
+{
+    if (aFileName != "")
+    {
+
+        playWin.show();
+        connect(this,&MainWindow::sendFileName,&playWin,&playDialog::play);
+        emit sendFileName(aFileName);
+    }
 }
 void MainWindow::tableItemClick(QTableWidgetItem* item)
 {
@@ -106,6 +119,35 @@ void MainWindow::tableItemClick(QTableWidgetItem* item)
     QByteArray byte;
     byte = QByteArray(nalData,nal->len); //一定要加长度，否则QByteArray遇到0就停止拷贝
     hexEdit->setData(byte);
+
+
+    ui->treeWidget->headerItem()->setText(0,QString());    //设置表头为空
+
+    QStringList hraders;
+    hraders<<" "<<"类型"<<"时间";
+    ui->treeWidget->setHeaderLabels(hraders);        //添加树表的表头
+    QTreeWidgetItem *item1 = new QTreeWidgetItem(ui->treeWidget);    //创建第一个父节点
+    item1->setText(0,"111");
+    item1->setCheckState(0,Qt::Unchecked);        //添加复选框，起始为未勾选
+    item1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+    //Qt::ItemIsSelectable表示可选的
+    //Qt::ItemIsUserCheckable项目上是否有复选框
+    //Qt::ItemIsEnabled 项目上是否没有被禁用（Enabled可用/Disabled禁用）
+    QTreeWidgetItem *item1_1 = new QTreeWidgetItem(item1);        //添加子节点
+    item1_1->setText(0,"111_111");
+    item1_1->setCheckState(0,Qt::Unchecked);
+    item1_1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+
+    QTreeWidgetItem *item1_2 = new QTreeWidgetItem(item1);
+    item1_2->setText(0,"111_222");
+    item1_2->setCheckState(0,Qt::Unchecked);
+    item1_2->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+
+    QTreeWidgetItem *item1_3 = new QTreeWidgetItem(item1);
+    item1_3->setText(0,"111_333");
+    item1_3->setCheckState(0,Qt::Unchecked);
+    item1_3->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+
 }
 
 

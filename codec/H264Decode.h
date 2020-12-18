@@ -149,6 +149,7 @@ private:
 
 private:
     int m_skippedFrame;
+    int m_frameCnt = 0;
     int m_picWidth;
     int m_picHeight;
 
@@ -162,5 +163,7 @@ private:
     AVFrame* m_frameYUV;
     struct SwsContext* m_imgctx;
     struct SwsContext* m_imgctxyuv;
+public:
+    int m_fps = 0;
 };
 #endif
