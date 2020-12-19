@@ -31,6 +31,7 @@ SOURCES += \
     codec/h264_sei.cpp \
     codec/h264_stream.cpp \
     codec/h265_stream.cpp \
+    codec/NalDebugTree.cpp \
     codec/NalParse.cpp \
     codec/h265_sei.cpp \
     commands.cpp \

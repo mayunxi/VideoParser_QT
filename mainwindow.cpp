@@ -67,6 +67,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //hexEdit->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     hexEdit->resize(831,221);
 
+    m_naluTreeWidget = new QTreeWidget(ui->widget);
+    m_naluTreeWidget->setFixedSize(ui->widget->size());
+    m_naluTreeWidget->show();
+    m_naluTreeWidget->headerItem()->setText(0,QString());    //设置表头为空
+
+
 }
 
 MainWindow::~MainWindow()
@@ -84,6 +90,7 @@ void MainWindow::openFile()
       return;
     this->setWindowTitle(aFileName+"-Video Parser");
     m_videoParser.init(aFileName.toStdString());
+    m_videoParser.m_nalParser.m_pTree = m_naluTreeWidget;
     ui->tableWidget->clearContents();
     tableIndex = 0;
     //表格窗口显示NALU信息
@@ -115,38 +122,38 @@ void MainWindow::tableItemClick(QTableWidgetItem* item)
     char* nalInfo = NULL;
     NALU_t *nal = &m_videoParser.m_vNalTypeVector[pos];
     int ret = m_videoParser.m_nalParser.parseNALU(*nal, &nalData, &nalInfo);
-    //nalData="dddd";
+    /*************************display data with hex***************************************/
     QByteArray byte;
     byte = QByteArray(nalData,nal->len); //一定要加长度，否则QByteArray遇到0就停止拷贝
     hexEdit->setData(byte);
 
+    /*************************display data with tree***************************************/
+//    ui->treeWidget->headerItem()->setText(0,QString());    //设置表头为空
 
-    ui->treeWidget->headerItem()->setText(0,QString());    //设置表头为空
+//    QStringList hraders;
+//    hraders<<" "<<"类型"<<"时间";
+//    ui->treeWidget->setHeaderLabels(hraders);        //添加树表的表头
+//    QTreeWidgetItem *item1 = new QTreeWidgetItem(ui->treeWidget);    //创建第一个父节点
+//    item1->setText(0,"111");
+//    item1->setCheckState(0,Qt::Unchecked);        //添加复选框，起始为未勾选
+//    item1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+//    //Qt::ItemIsSelectable表示可选的
+//    //Qt::ItemIsUserCheckable项目上是否有复选框
+//    //Qt::ItemIsEnabled 项目上是否没有被禁用（Enabled可用/Disabled禁用）
+//    QTreeWidgetItem *item1_1 = new QTreeWidgetItem(item1);        //添加子节点
+//    item1_1->setText(0,"111_111");
+//    item1_1->setCheckState(0,Qt::Unchecked);
+//    item1_1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
-    QStringList hraders;
-    hraders<<" "<<"类型"<<"时间";
-    ui->treeWidget->setHeaderLabels(hraders);        //添加树表的表头
-    QTreeWidgetItem *item1 = new QTreeWidgetItem(ui->treeWidget);    //创建第一个父节点
-    item1->setText(0,"111");
-    item1->setCheckState(0,Qt::Unchecked);        //添加复选框，起始为未勾选
-    item1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
-    //Qt::ItemIsSelectable表示可选的
-    //Qt::ItemIsUserCheckable项目上是否有复选框
-    //Qt::ItemIsEnabled 项目上是否没有被禁用（Enabled可用/Disabled禁用）
-    QTreeWidgetItem *item1_1 = new QTreeWidgetItem(item1);        //添加子节点
-    item1_1->setText(0,"111_111");
-    item1_1->setCheckState(0,Qt::Unchecked);
-    item1_1->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+//    QTreeWidgetItem *item1_2 = new QTreeWidgetItem(item1);
+//    item1_2->setText(0,"111_222");
+//    item1_2->setCheckState(0,Qt::Unchecked);
+//    item1_2->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
-    QTreeWidgetItem *item1_2 = new QTreeWidgetItem(item1);
-    item1_2->setText(0,"111_222");
-    item1_2->setCheckState(0,Qt::Unchecked);
-    item1_2->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
-
-    QTreeWidgetItem *item1_3 = new QTreeWidgetItem(item1);
-    item1_3->setText(0,"111_333");
-    item1_3->setCheckState(0,Qt::Unchecked);
-    item1_3->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+//    QTreeWidgetItem *item1_3 = new QTreeWidgetItem(item1);
+//    item1_3->setText(0,"111_333");
+//    item1_3->setCheckState(0,Qt::Unchecked);
+//    item1_3->setFlags(Qt::ItemIsSelectable|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
 
 }
 

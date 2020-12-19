@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTableWidget>
+#include <QTreeWidget>
 #include "videoparser.h"
 #include "qhexedit.h"
 #include "playdialog.h"
@@ -28,6 +29,7 @@ public slots:
 public:
     VideoParser m_videoParser;
     QHexEdit *hexEdit;
+    QTreeWidget *m_naluTreeWidget;
 public:
     int ShowNLInfo(NALU_t* nalu);
 private:

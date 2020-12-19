@@ -14,21 +14,6 @@
    <string>Video Parser</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTreeWidget" name="treeWidget">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>290</y>
-      <width>561</width>
-      <height>451</height>
-     </rect>
-    </property>
-    <column>
-     <property name="text">
-      <string notr="true">1</string>
-     </property>
-    </column>
-   </widget>
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
@@ -84,6 +69,16 @@
      <string>Hex view</string>
     </property>
    </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>290</y>
+      <width>561</width>
+      <height>361</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -91,7 +86,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>28</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

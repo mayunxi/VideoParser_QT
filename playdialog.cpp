@@ -21,8 +21,9 @@ playDialog::~playDialog()
 
 void playDialog::play(QString name)
 {
+    this->setWindowTitle(name);
     printf("play Dialog start\n");
-    getFrame = new GetFrameThread(name);
+    getFrame = new GetFrameThread(name); //new a thread just for play
     connect(getFrame,&GetFrameThread::sendFrame,this,&playDialog::recFrame);
     QImage image(getFrame->rgbBuf , getFrame->width , getFrame->height , QImage::Format_RGB888);//data数组 //355宽度 //frame_len 高度//每行1005字节数//格式
 //    this->resize(getFrame->width+12,getFrame->height+24);

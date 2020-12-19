@@ -589,7 +589,7 @@ int NalParser::parseNALU(NALU_t& vNal, char** naluData, char** naluInfo)
     else
     {
         read_nal_unit(m_hH264, &m_naluData[vNal.startcodeLen], vNal.len - vNal.startcodeLen);
-        //h264_debug_nal_t(m_hH264, m_hH264->nal);  // ��ӡ��m_outputInfo��
+        h264_debug_nal_t(m_hH264, m_hH264->nal);  // ��ӡ��m_outputInfo��
     }
 
     *naluData = (char*)m_naluData;
