@@ -30,9 +30,9 @@ Stargazers over time
 点击“播放”菜单出现播放子窗口。
 
 ## 界面
-V1.0版本界面：<br>
-
-
+V1.0版本界面：
+![主界面](https://images.gitee.com/uploads/images/2020/1220/162013_c3c54dc1_5162686.png "2020-12-20 15-30-21 的屏幕截图.png")
+![播放页面](https://images.gitee.com/uploads/images/2020/1220/162040_7f36750b_5162686.png "2020-12-20 15-30-43 的屏幕截图.png")
 
 ## 测试
 本工程使用H264Visa、CodecVisa及HM工具对比测试。<br>
