@@ -31,7 +31,7 @@ Stargazers over time
 
 ## 界面
 V1.0版本界面：<br>
-![GUI](https://github.com/latelee/H264BSAnalyzer/blob/master/screenshots/v1.2.png)
+
 
 
 ## 测试
