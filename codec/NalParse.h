@@ -6,6 +6,13 @@
 
 #include <vector>
 #include <string>
+#include <cstdlib>
+#include <iostream>
+#include <stdlib.h>
+//**********************
+#include <QTreeWidget>
+typedef QTreeWidgetItem *  TREE_NALU;
+//**********************
 using std::vector;
 using namespace std;
 typedef struct
@@ -104,28 +111,30 @@ private:
     FileType judeVideoFile(const char* filename);
 
 private:
-    void h264_debug_sps(sps_t* sps);
-    void h264_debug_pps(pps_t* pps);
-    void h264_debug_slice_header(h264_stream_t* h);
-    void h264_debug_aud(aud_t* aud);
-    void h264_debug_seis( h264_stream_t* h);
+    TREE_NALU AddTreeItem(TREE_NALU _item);
+    TREE_NALU AddTreeItem(QTreeWidget *tree);
+    void h264_debug_sps(sps_t* sps,TREE_NALU root);
+    void h264_debug_pps(pps_t* pps,TREE_NALU root);
+    void h264_debug_slice_header(h264_stream_t* h,TREE_NALU root);
+    void h264_debug_aud(aud_t* aud,TREE_NALU root);
+    void h264_debug_seis( h264_stream_t* h,TREE_NALU root);
 
-    void h264_debug_nal(h264_stream_t* h, nal_t* nal);
+    void h264_debug_nal_t(h264_stream_t* h, nal_t* nal);
 
-    void h265_debug_ptl(profile_tier_level_t* ptl, int profilePresentFlag, int max_sub_layers_minus1);
-    void h265_debug_sub_layer_hrd_parameters(sub_layer_hrd_parameters_t* subhrd, int sub_pic_hrd_params_present_flag, int CpbCnt, int subLayerId, const char* p);
-    void h265_debug_hrd_parameters(hrd_parameters_t* hrd, int commonInfPresentFlag, int maxNumSubLayersMinus1);
-    void h265_debug_vps(h265_vps_t* vps);
-    void h265_debug_scaling_list(scaling_list_data_t* sld);
-    void h265_debug_short_term_ref_pic_set(h265_sps_t* sps, st_ref_pic_set_t*st, referencePictureSets_t* rps, int stRpsIdx);
-    void h265_debug_vui_parameters(vui_parameters_t* vui, int maxNumSubLayersMinus1);
-    void h265_debug_sps(h265_sps_t* sps);
-    void h265_debug_pps(h265_pps_t* pps);
-    void h265_debug_aud(h265_aud_t* aud);
-    void h265_debug_seis(h265_stream_t* h);
-    void h265_debug_ref_pic_lists_modification(h265_slice_header_t* hrd);
-    void h265_debug_pred_weight_table(h265_stream_t* h);
-    void h265_debug_slice_header(h265_stream_t* h);
+    void h265_debug_ptl(profile_tier_level_t* ptl, int profilePresentFlag, int max_sub_layers_minus1,TREE_NALU root);
+    void h265_debug_sub_layer_hrd_parameters(sub_layer_hrd_parameters_t* subhrd, int sub_pic_hrd_params_present_flag, int CpbCnt, int subLayerId, const char* p,TREE_NALU root);
+    void h265_debug_hrd_parameters(hrd_parameters_t* hrd, int commonInfPresentFlag, int maxNumSubLayersMinus1,TREE_NALU root);
+    void h265_debug_vps(h265_vps_t* vps,TREE_NALU root);
+    void h265_debug_scaling_list(scaling_list_data_t* sld,TREE_NALU root);
+    void h265_debug_short_term_ref_pic_set(h265_sps_t* sps, st_ref_pic_set_t*st, referencePictureSets_t* rps, int stRpsIdx,TREE_NALU root);
+    void h265_debug_vui_parameters(vui_parameters_t* vui, int maxNumSubLayersMinus1,TREE_NALU root);
+    void h265_debug_sps(h265_sps_t* sps,TREE_NALU root);
+    void h265_debug_pps(h265_pps_t* pps,TREE_NALU root);
+    void h265_debug_aud(h265_aud_t* aud,TREE_NALU root);
+    void h265_debug_seis(h265_stream_t* h,TREE_NALU root);
+    void h265_debug_ref_pic_lists_modification(h265_slice_header_t* hrd,TREE_NALU root);
+    void h265_debug_pred_weight_table(h265_stream_t* h,TREE_NALU root);
+    void h265_debug_slice_header(h265_stream_t* h,TREE_NALU root);
 
     void h265_debug_nal(h265_stream_t* h, h265_nal_t* nal);
     void h265_debug_nal_t(h265_stream_t* h, h265_nal_t* nal);
@@ -147,5 +156,8 @@ private:
     uint8_t* m_naluData;
     void* dlg;
     FILE* m_pFile;
+public:
+    QTreeWidget *m_pTree;
+    TREE_NALU  m_root = NULL;
 };
 #endif

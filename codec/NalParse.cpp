@@ -4,7 +4,7 @@
 #include <string.h>
 //#include <memory.h>
 #include<stdarg.h>
-#include "NaLParse.h"
+#include "codec/NalParse.h"
 
 NalParser::NalParser()
 {
@@ -30,7 +30,7 @@ int NalParser::init(const char* filename)
     m_sliceIndex =0;//
     m_filename = filename;
 
-    // judge file 判断文件类型
+    // judge file �ж��ļ�����
     m_nType = judeVideoFile(m_filename);
 
     if (m_nType == FILE_UNK)
@@ -54,7 +54,7 @@ int NalParser::init(const char* filename)
         }
         m_hH264 = h264_new();
     }
-    
+
 
 
     if (m_pFile != NULL)
@@ -113,7 +113,7 @@ int NalParser::probeNALU(vector<NALU_t>& vNal, int num)
         {
             break;
         }
-        nalLen = getAnnexbNALU(m_pFile, &n);//每执行一次，文件的指针指向本次找到的NALU的末尾，下一个位置即为下个NALU的起始码0x000001
+        nalLen = getAnnexbNALU(m_pFile, &n);//ÿִ��һ�Σ��ļ���ָ��ָ�򱾴��ҵ���NALU��ĩβ����һ��λ�ü�Ϊ�¸�NALU����ʼ��0x000001
         n.offset = offset;
         n.num = nal_num;
         offset = offset + nalLen;
@@ -130,7 +130,7 @@ int NalParser::probeNALU(vector<NALU_t>& vNal, int num)
 std::string NalParser::string_format(const char* format, ...)
 {
 
-#if 1 // 最大长度限制：1024 - 1
+#if 1 // ���󳤶����ƣ�1024 - 1
     va_list args;
     va_start(args, format);
     char buf[4096] = {0};
@@ -138,10 +138,10 @@ std::string NalParser::string_format(const char* format, ...)
     va_end(args);
     std::string str(buf);
     return str;
-#else // 无长度限制
+#else // �޳�������
     va_list args;
     va_start(args, format);
-    int count = vsnprintf(NULL, 0, format, args); // 使用vsnprintf：warning C4996; 使用vsnprintf_s：无法自动计算长度
+    int count = vsnprintf(NULL, 0, format, args); // ʹ��vsnprintf��warning C4996; ʹ��vsnprintf_s���޷��Զ����㳤��
     va_end(args);
     va_start(args, format);
     char* buff = (char*)malloc(count * sizeof(wchar_t));
@@ -167,7 +167,7 @@ void NalParser::naluInfoStr(NALU_t *nalu)
    nalu->textColor="black";
    if (nalu->codecType == 0)
    {
-       // NAL单元类型
+       // NAL��Ԫ����
        switch (nalu->nalType)
        {
        case 0:
@@ -257,7 +257,7 @@ void NalParser::naluInfoStr(NALU_t *nalu)
    }
    else  //h265
    {
-       // NAL单元类型
+       // NAL��Ԫ����
        switch (nalu->nalType)
        {
        // to confirm type...
@@ -359,28 +359,34 @@ void NalParser::naluInfoStr(NALU_t *nalu)
        }
    }
 
-   // 数据偏移
+   // ����ƫ��
    strOffset=string_format("%08X", nalu->offset);
-   // 长度
+   // ����
    strNalLen=string_format("%d",nalu->len);
-   // 起始码
+   // ��ʼ��
    strStartCode=string_format("%s", nalu->startcodeBuffer);
 
 }
 
 void NalParser::VideoInfoStr(videoinfo_t *videoInfo)
 {
-
+    //https://github.com/mayunxi/VideoParser_QT/issues/1
     string &strSimpleInfo = videoInfo->strSimpleInfo;
+    strSimpleInfo = "1";
     string &strProfileInfo = videoInfo->strProfileInfo;
+    strProfileInfo = "1";
     string &strLevelInfo = videoInfo->strLevelInfo;
+    strLevelInfo = "1";
     string &strTierInfo= videoInfo->strTierInfo;
+    strTierInfo = "1";
     string &strVideoFormat = videoInfo->strVideoFormat;
+    strVideoFormat = "1";
     string &strBitDepth = videoInfo->strBitDepth;
+    strBitDepth = "1";
     // H.265
     if (videoInfo->type)
     {
-        // profile类型
+        // profile����
         switch (videoInfo->profile_idc)
         {
         case PROFILE_NONE:
@@ -469,7 +475,7 @@ void NalParser::VideoInfoStr(videoinfo_t *videoInfo)
     }
     else // h264
     {
-        // profile类型
+        // profile����
         switch (videoInfo->profile_idc)
         {
         case 66:
@@ -571,19 +577,19 @@ int NalParser::parseNALU(NALU_t& vNal, char** naluData, char** naluInfo)
 
     fread(m_naluData, vNal.len, 1, m_pFile);
 
-    // 不需要再次查询nal
+    // ����Ҫ�ٴβ�ѯnal
     //find_nal_unit(m_naluData, vNal.len, &nal_start, &nal_end);
-    memset(m_outputInfo, '\0', OUTPUT_SIZE); // 输出内容先清空
+    memset(m_outputInfo, '\0', OUTPUT_SIZE); // ��������������
     if (m_nType == 1)
     {
-        // 此函数分析时，是不包含startcode的，所以要减去startcodeLen
+        // �˺�������ʱ���ǲ�����startcode�ģ�����Ҫ��ȥstartcodeLen
         h265_read_nal_unit(m_hH265, &m_naluData[vNal.startcodeLen], vNal.len - vNal.startcodeLen);
-        //h265_debug_nal_t(m_hH265,m_hH265->nal);    // 打印到m_outputInfo中
+        //h265_debug_nal_t(m_hH265,m_hH265->nal);    // ��ӡ��m_outputInfo��,show in the tree
     }
     else
     {
         read_nal_unit(m_hH264, &m_naluData[vNal.startcodeLen], vNal.len - vNal.startcodeLen);
-        //h264_debug_nal_t(m_hH264, m_hH264->nal);  // 打印到m_outputInfo中
+        h264_debug_nal_t(m_hH264, m_hH264->nal);  // ��ӡ��m_outputInfo��
     }
 
     *naluData = (char*)m_naluData;
@@ -621,10 +627,10 @@ static int ue(char *buff, int len, int &start_bit)
 }
 
 /**
-解析NAL，返回两个开始字符之间间隔的字节数，即包含startcode的NALU的长度
+����NAL������������ʼ�ַ�֮���������ֽ�����������startcode��NALU�ĳ���
 
-note：一个视频文件中不同的NAL，startcode可能不一样。比如SPS为4字节，但SEI可能为3字节
-todo:每次读一个字节，较慢，有无好的方法？
+note��һ����Ƶ�ļ��в�ͬ��NAL��startcode���ܲ�һ��������SPSΪ4�ֽڣ���SEI����Ϊ3�ֽ�
+todo:ÿ�ζ�һ���ֽڣ����������޺õķ�����
 */
 
 int NalParser::getAnnexbNALU(FILE* fp, NALU_t* nalu)
@@ -638,77 +644,77 @@ int NalParser::getAnnexbNALU(FILE* fp, NALU_t* nalu)
     if ((buffer = (unsigned char*)calloc (MAX_NAL_SIZE, sizeof(char))) == NULL)
         printf("Could not allocate buffer memory\n");
 
-    if (3 != fread (buffer, 1, 3, fp))//从码流中读3个字节
+    if (3 != fread (buffer, 1, 3, fp))//�������ж�3���ֽ�
     {
         free(buffer);
         return 0;
     }
-    info2 = findStartcode3(buffer);//判断是否为0x000001
+    info2 = findStartcode3(buffer);//�ж��Ƿ�Ϊ0x000001
     if(info2 != 1)
     {
-        //如果不是，再读一个字节
-        if(1 != fread(buffer+3, 1, 1, fp))//读一个字节
+        //�������ǣ��ٶ�һ���ֽ�
+        if(1 != fread(buffer+3, 1, 1, fp))//��һ���ֽ�
         {
             free(buffer);
             return 0;
         }
-        info3 = findStartcode4(buffer);//判断是否为0x00000001
-        if (info3 != 1)//如果不是，返回-1
+        info3 = findStartcode4(buffer);//�ж��Ƿ�Ϊ0x00000001
+        if (info3 != 1)//�������ǣ�����-1
         {
             free(buffer);
             return -1;
         }
         else
         {
-            //如果是0x00000001,得到开始前缀为4个字节
+            //������0x00000001,�õ���ʼǰ׺Ϊ4���ֽ�
             nalu->startcodeLen = 4;
         }
     }
     else
     {
-        //如果是0x000001,得到开始前缀为3个字节
+        //������0x000001,�õ���ʼǰ׺Ϊ3���ֽ�
         nalu->startcodeLen = 3;
     }
 
     pos = nalu->startcodeLen;
-    //查找下一个开始字符的标志位
+    //������һ����ʼ�ַ��ı�־λ
     found = 0;
     info2 = 0;
     info3 = 0;
 
     while (!found)
     {
-        if (feof(fp))//判断是否到了文件尾
+        if (feof(fp))//�ж��Ƿ������ļ�β
         {
             eof = 1;
             goto got_nal;
         }
-        buffer[pos++] = fgetc(fp);//读一个字节到BUF中
+        buffer[pos++] = fgetc(fp);//��һ���ֽڵ�BUF��
 
-        info3 = findStartcode4(&buffer[pos-4]);//判断是否为0x00000001
+        info3 = findStartcode4(&buffer[pos-4]);//�ж��Ƿ�Ϊ0x00000001
         if(info3 != 1)
-            info2 = findStartcode3(&buffer[pos-3]);//判断是否为0x000001
+            info2 = findStartcode3(&buffer[pos-3]);//�ж��Ƿ�Ϊ0x000001
 
         found = (info2 == 1 || info3 == 1);
     }
 
-    // startcode可能为3，也可能为4，故要如此判断
+    // startcode����Ϊ3��Ҳ����Ϊ4����Ҫ�����ж�
     rewind = (info3 == 1)? -4 : -3;
 
-    if (0 != fseek (fp, rewind, SEEK_CUR))//把文件指针指向前一个NALU的末尾
+    if (0 != fseek (fp, rewind, SEEK_CUR))//���ļ�ָ��ָ��ǰһ��NALU��ĩβ
     {
         free(buffer);
         printf("Cannot fseek in the bit stream file");
     }
 
 got_nal:
-    // 当达到文件末尾时，回退1个位置
+    // ���ﵽ�ļ�ĩβʱ������1��λ��
     if (eof)
     {
         rewind = -1;
     }
 
-    // 包括起始码在内的5个字节
+    // ������ʼ�����ڵ�5���ֽ�
     if (nalu->startcodeLen == 3)
         sprintf(nalu->startcodeBuffer, "%02x%02x%02x%02x", buffer[0], buffer[1], buffer[2], buffer[3]);
     else
@@ -731,8 +737,8 @@ got_nal:
         nal_header = buffer[nalu->startcodeLen];
         nalu->nalType = nal_header & 0x1f;// 5 bit
 
-        // 获取slice类型：I帧、P帧、B帧
-        // 注：在nal类型为1~5时获取
+        // ��ȡslice���ͣ�I֡��P֡��B֡
+        // ע����nal����Ϊ1~5ʱ��ȡ
         if (nalu->nalType <= 5 && nalu->nalType >= 1)
         {
             int start_bit = 0;
@@ -754,7 +760,7 @@ got_nal:
 
     free(buffer);
 
-    return (pos+rewind);//返回两个开始字符之间间隔的字节数，即包含有前缀的NALU的长度
+    return (pos+rewind);//����������ʼ�ַ�֮���������ֽ�������������ǰ׺��NALU�ĳ���
 }
 
 int NalParser::findFirstNALU(FILE* fp, int* startcodeLenght)
@@ -772,12 +778,12 @@ int NalParser::findFirstNALU(FILE* fp, int* startcodeLenght)
 
     while (!found && !feof(fp))
     {
-        buffer[pos++] = fgetc(fp);//读一个字节到BUF中
+        buffer[pos++] = fgetc(fp);//��һ���ֽڵ�BUF��
 
-        info3 = findStartcode4(&buffer[pos-4]);//判断是否为0x00000001
+        info3 = findStartcode4(&buffer[pos-4]);//�ж��Ƿ�Ϊ0x00000001
         if(info3 != 1)
         {
-            info2 = findStartcode3(&buffer[pos-3]);//判断是否为0x000001
+            info2 = findStartcode3(&buffer[pos-3]);//�ж��Ƿ�Ϊ0x000001
             if (info2)
             {
                 startcode_len = 3;
@@ -796,7 +802,7 @@ int NalParser::findFirstNALU(FILE* fp, int* startcodeLenght)
         }
     }
 
-    // 文件指针要恢复
+    // �ļ�ָ��Ҫ�ָ�
     fseek(fp, -startcode_len, SEEK_CUR);
 
     free(buffer);
@@ -805,26 +811,26 @@ int NalParser::findFirstNALU(FILE* fp, int* startcodeLenght)
 
     return pos - startcode_len;
 }
-
+bool endWith(const string &str, const string &tail) {
+    return str.compare(str.size() - tail.size(), tail.size(), tail) == 0;
+}
 FileType NalParser::judeVideoFile(const char* filename)
 {
     char szExt[16] = {0};
     FileType codecType = FILE_H264; // default
 
-    _splitpath(filename, NULL, NULL, NULL, szExt);
-    if (!strcmp(&szExt[1], "h265") || !strcmp(&szExt[1], "265") ||
-        !strcmp(&szExt[1], "hevc"))
+    string file = filename;
+    if (endWith(file,".h265"))
     {
         codecType = FILE_H265;
     }
-    else if (!strcmp(&szExt[1], "h264") || !strcmp(&szExt[1], "264") ||
-        !strcmp(&szExt[1], "avc"))
+    else if (endWith(file,".h264"))
     {
         codecType = FILE_H264;
     }
     else
     {
-        // read content 
+        // read content
         FILE* fp = NULL;
         int offset = 0;
         int startcode = 0;

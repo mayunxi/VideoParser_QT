@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 #include <QTableWidget>
+#include <QTreeWidget>
 #include "videoparser.h"
 #include "qhexedit.h"
+#include "playdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,14 +24,20 @@ private:
     Ui::MainWindow *ui;
 public slots:
     void openFile();
+    void play();
     void tableItemClick(QTableWidgetItem* item);
 public:
     VideoParser m_videoParser;
     QHexEdit *hexEdit;
+    QTreeWidget *m_naluTreeWidget;
 public:
     int ShowNLInfo(NALU_t* nalu);
 private:
+    QString aFileName="";
+    playDialog playWin;
     int tableIndex=0;
+signals:
+    void sendFileName(QString name);
 };
 
 #endif // MAINWINDOW_H

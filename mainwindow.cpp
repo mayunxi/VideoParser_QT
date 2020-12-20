@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+#include "H264Decode.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QMenu *pPlay = mBar->addMenu("播放");
     QAction *playAct = pPlay->addAction("播放");
+    connect(playAct,&QAction::triggered,this,&MainWindow::play);
 
     QMenu *pAbout = mBar->addMenu("关于");
     QAction *aboutAct = pAbout->addAction("关于");
@@ -63,8 +66,13 @@ MainWindow::MainWindow(QWidget *parent) :
     hexEdit = new QHexEdit(ui->frame_hex);
     //hexEdit->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
     hexEdit->resize(831,221);
-    connect(hexEdit, SIGNAL(overwriteModeChanged(bool)), this, SLOT(setOverwriteMode(bool)));
-    connect(hexEdit, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
+
+    m_naluTreeWidget = new QTreeWidget(ui->widget);
+    m_naluTreeWidget->setFixedSize(ui->widget->size());
+    m_naluTreeWidget->show();
+    m_naluTreeWidget->headerItem()->setText(0,QString());    //设置表头为空
+
+
 }
 
 MainWindow::~MainWindow()
@@ -77,25 +85,32 @@ void MainWindow::openFile()
     QString curPath=QDir::currentPath();//获取系统当前目录
     QString dlgTitle="打开视频文件"; //对话框标题
     QString filter="h264/h265文件(*.h264 *.264 *.h265 *.265);;视频文件(*.mp4 *.flv *.avi);;所有文件(*.*)"; //文件过滤器
-    QString aFileName=QFileDialog::getOpenFileName(this,dlgTitle,curPath,filter);
+    aFileName=QFileDialog::getOpenFileName(this,dlgTitle,curPath,filter);
     if (aFileName.isEmpty())
       return;
     this->setWindowTitle(aFileName+"-Video Parser");
     m_videoParser.init(aFileName.toStdString());
+    m_videoParser.m_nalParser.m_pTree = m_naluTreeWidget;
     ui->tableWidget->clearContents();
     tableIndex = 0;
+    //表格窗口显示NALU信息
     for (int i = 0; i < m_videoParser.m_nValTotalNum; i++)
     {
         ShowNLInfo(&m_videoParser.m_vNalTypeVector[i]);
     }
+    //视频信息
     ui->textEdit_info->setText(QString::fromStdString(m_videoParser.m_cVideoInfo.strSimpleInfo));
 }
-int hex2char(uint8_t c)
+
+void MainWindow::play()
 {
-    return ((c >= '0') && (c <= '9')) ? int(c - '0') :
-           ((c >= 'A') && (c <= 'F')) ? int(c - 'A' + 10) :
-           ((c >= 'a') && (c <= 'f')) ? int(c - 'a' + 10) :
-           -1;
+    if (aFileName != "")
+    {
+
+        playWin.show();
+        connect(this,&MainWindow::sendFileName,&playWin,&playDialog::play);
+        emit sendFileName(aFileName);
+    }
 }
 void MainWindow::tableItemClick(QTableWidgetItem* item)
 {
@@ -107,10 +122,11 @@ void MainWindow::tableItemClick(QTableWidgetItem* item)
     char* nalInfo = NULL;
     NALU_t *nal = &m_videoParser.m_vNalTypeVector[pos];
     int ret = m_videoParser.m_nalParser.parseNALU(*nal, &nalData, &nalInfo);
-    //nalData="dddd";
+    /*************************display data with hex***************************************/
     QByteArray byte;
     byte = QByteArray(nalData,nal->len); //一定要加长度，否则QByteArray遇到0就停止拷贝
     hexEdit->setData(byte);
+
 }
 
 

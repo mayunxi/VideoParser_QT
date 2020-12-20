@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
-
+CONFIG += C++11
+QMAKE_CXXFLAGS += -std=c++11
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = videoParser
@@ -30,11 +31,15 @@ SOURCES += \
     codec/h264_sei.cpp \
     codec/h264_stream.cpp \
     codec/h265_stream.cpp \
+    codec/NalDebugTree.cpp \
     codec/NalParse.cpp \
     codec/h265_sei.cpp \
     commands.cpp \
     chunks.cpp \
-    qhexedit.cpp
+    qhexedit.cpp \
+    codec/H264Decode.cpp \
+    playdialog.cpp \
+    getframethread.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -52,9 +57,31 @@ HEADERS += \
     codec/NalParse.h \
     qhexedit.h \
     chunks.h \
-    commands.h
+    commands.h \
+    codec/H264Decode.h \
+    playdialog.h \
+    getframethread.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    playdialog.ui
 
 INCLUDEPATH += $$PWD/codec/
+win32{
+
+INCLUDEPATH += $$PWD/ffmpeg/include
+
+LIBS += -L$$PWD\ffmpeg\lib -lavformat -lavcodec -lavutil  -liconv -lswresample   -lgcc -lmingwex  -lswscale
+}
+unix{
+
+INCLUDEPATH += /usr/local/include
+
+LIBS += -L/usr/local/lib -lavformat -lavcodec -lavutil  -lswresample  -lswscale
+}
+
+DISTFILES += \
+    ico/bfzn_004.ico \
+    ico/bfzn_005.ico \
+    ico/bfzn_006.ico \
+    ico/bfzn_007.ico
