@@ -1,4 +1,4 @@
-# H264BSAnalyzer -- H.264/AVC H.265/HEVC bitstream analyze tool
+
 
 [![GitHub stars](https://img.shields.io/github/stars/mayunxi/VideoParser_QT.svg)](https://github.com/mayunxi/VideoParser_QT)[![GitHub forks](https://img.shields.io/github/forks/mayunxi/VideoParser_QT.svg)](https://github.com/mayunxi/VideoParser_QT)
 
