@@ -16,7 +16,7 @@ Stargazers over time
 ## 功能
 * 支持不同NAL的显示，包括VPS、SPS、PPS、SEI、AUD、Slice的解析。
 * 支持显示NAL十六进制数据。
-* 支持不同slice的着色显示，显示帧序号。
+* 支持不同slice的着色显示，颜色使用莫兰迪色系，显示帧序号。
 * 自动解析文件名。
 * 支持文件名后缀：
     * H.264文件后缀名为.h264、.h264、.avc。
